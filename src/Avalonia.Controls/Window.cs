@@ -948,6 +948,10 @@ namespace Avalonia.Controls
 
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
         {
+            if (change.Property == SizeToContentProperty)
+            {
+                InvalidateMeasure();
+            }
             if (change.Property == SystemDecorationsProperty)
             {
                 var typedNewValue = change.NewValue.GetValueOrDefault<SystemDecorations>();
