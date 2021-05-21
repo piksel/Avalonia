@@ -27,7 +27,7 @@ public:
     AvnPoint lastPositionSet;
     NSString* _lastTitle;
     IAvnMenu* _mainMenu;
-    
+    bool suppressResizeEvents;
     bool _shown;
     
     WindowBaseImpl(IAvnWindowBaseEvents* events, IAvnGlContext* gl)
@@ -1328,8 +1328,9 @@ NSArray* AllLoopModes = [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEvent
         _lastPixelSize.Width = (int)fsize.width;
         _lastPixelSize.Height = (int)fsize.height;
         [self updateRenderTarget];
-    
-        _parent->BaseEvents->Resized(AvnSize{newSize.width, newSize.height});
+  
+        if (!_parent->suppressResizeEvents)
+            _parent->BaseEvents->Resized(AvnSize{newSize.width, newSize.height});
     }
 }
 
@@ -1849,10 +1850,11 @@ NSArray* AllLoopModes = [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEvent
     
     NSRect frame = [self frame];
     NSRect updatedFrame = NSMakeRect(frame.origin.x, frame.origin.y, frame.size.width + 1.0, frame.size.height + 1.0);
+    _parent->suppressResizeEvents = true;
     [self setFrame:updatedFrame display:YES];
     [self setFrame:frame display:YES];
-    
     [self invalidateShadow];
+    _parent->suppressResizeEvents = false;
 }
 
 -(void) setIsExtended:(bool)value;
