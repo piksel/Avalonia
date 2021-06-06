@@ -16,7 +16,7 @@ namespace Avalonia.Win32.Interop
     [SuppressMessage("Microsoft.StyleCop.CSharp.NamingRules", "SA1310:FieldNamesMustNotContainUnderscore", Justification = "Using Win32 naming for consistency.")]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements must be documented", Justification = "Look in Win32 docs.")]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:Enumeration items must be documented", Justification = "Look in Win32 docs.")]
-    internal unsafe static class UnmanagedMethods
+    internal unsafe static partial class UnmanagedMethods
     {
         public const int CW_USEDEFAULT = unchecked((int)0x80000000);
 
@@ -743,6 +743,7 @@ namespace Avalonia.Win32.Interop
             WM_USER = 0x0400,
 
             WM_DISPATCH_WORK_ITEM = WM_USER,
+            WM_NOTIFY_CALLBACK = WM_USER + 1,
         }
 
         public enum MapVirtualKeyMapTypes : uint

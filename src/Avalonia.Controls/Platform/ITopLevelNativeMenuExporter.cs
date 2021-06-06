@@ -15,4 +15,16 @@ namespace Avalonia.Controls.Platform
     {
         ITopLevelNativeMenuExporter NativeMenuExporter { get; }
     }
+    
+    public interface ITopLevelStatusMenuExporter
+    {
+        bool IsStatusMenuExported { get; }
+        event EventHandler OnIsStatusMenuExportedChanged;
+        void SetStatusMenu(NativeMenuItem menu);
+    }
+    
+    public interface ITopLevelImplWithStatusMenuExporter : ITopLevelImpl
+    {
+        ITopLevelStatusMenuExporter StatusMenuExporter { get; }
+    }
 }

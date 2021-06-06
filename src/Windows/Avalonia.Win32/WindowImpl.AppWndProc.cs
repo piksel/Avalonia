@@ -453,6 +453,14 @@ namespace Avalonia.Win32
                 case WindowsMessage.WM_KILLFOCUS:
                     LostFocus?.Invoke();
                     break;
+                
+                case WindowsMessage.WM_COMMAND:
+                    _statusMenuExporter.CommandMessageReceived(wParam, lParam);
+                    break;
+                
+                case WindowsMessage.WM_NOTIFY_CALLBACK:
+                    _statusMenuExporter.CallbackMessageReceived(wParam, lParam);
+                    break;
             }
 
 #if USE_MANAGED_DRAG

@@ -12,6 +12,11 @@ namespace Avalonia.Controls
 
         public static bool GetIsNativeMenuExported(TopLevel tl) => tl.GetValue(IsNativeMenuExportedProperty);
         
+        public static readonly AttachedProperty<bool> IsStatusMenuExportedProperty =
+            AvaloniaProperty.RegisterAttached<NativeMenu, TopLevel, bool>("IsStatusMenuExported");
+
+        public static bool GetIsStatusMenuExported(TopLevel tl) => tl.GetValue(IsStatusMenuExportedProperty);
+        
         private static readonly AttachedProperty<NativeMenuInfo> s_nativeMenuInfoProperty =
             AvaloniaProperty.RegisterAttached<NativeMenu, TopLevel, NativeMenuInfo>("___NativeMenuInfo");
         
@@ -19,6 +24,7 @@ namespace Avalonia.Controls
         {
             public bool ChangingIsExported { get; set; }
             public ITopLevelNativeMenuExporter Exporter { get; }
+            public ITopLevelStatusMenuExporter StatusExporter { get; }
 
             public NativeMenuInfo(TopLevel target)
             {
@@ -28,6 +34,15 @@ namespace Avalonia.Controls
                     Exporter.OnIsNativeMenuExportedChanged += delegate
                     {
                         SetIsNativeMenuExported(target, Exporter.IsNativeMenuExported);
+                    };
+                }
+                
+                StatusExporter = (target.PlatformImpl as ITopLevelImplWithStatusMenuExporter)?.StatusMenuExporter;
+                if (StatusExporter != null)
+                {
+                    StatusExporter.OnIsStatusMenuExportedChanged += delegate
+                    {
+                        SetIsStatusMenuExported(target, StatusExporter.IsStatusMenuExported);
                     };
                 }
             }
@@ -63,6 +78,18 @@ namespace Avalonia.Controls
         public static void SetMenu(AvaloniaObject o, NativeMenu menu) => o.SetValue(MenuProperty, menu);
         public static NativeMenu GetMenu(AvaloniaObject o) => o.GetValue(MenuProperty);
         
+        static void SetIsStatusMenuExported(TopLevel tl, bool value)
+        {
+            GetInfo(tl).ChangingIsExported = true;
+            tl.SetValue(IsNativeMenuExportedProperty, value);
+        }
+        
+        public static readonly AttachedProperty<NativeMenuItem> StatusMenuProperty
+            = AvaloniaProperty.RegisterAttached<NativeMenu, AvaloniaObject, NativeMenuItem>("StatusMenu");
+
+        public static void SetStatusMenu(AvaloniaObject o, NativeMenuItem menu) => o.SetValue(StatusMenuProperty, menu);
+        public static NativeMenuItem GetStatusMenu(AvaloniaObject o) => o.GetValue(StatusMenuProperty);
+        
         static NativeMenu()
         {
             // This is needed because of the lack of attached direct properties
@@ -78,6 +105,13 @@ namespace Avalonia.Controls
                 if (args.Sender is TopLevel tl)
                 {
                     GetInfo(tl).Exporter?.SetNativeMenu(args.NewValue.GetValueOrDefault());
+                }
+            });
+            StatusMenuProperty.Changed.Subscribe(args =>
+            {
+                if (args.Sender is TopLevel tl)
+                {
+                    GetInfo(tl).StatusExporter?.SetStatusMenu(args.NewValue.GetValueOrDefault());
                 }
             });
         }

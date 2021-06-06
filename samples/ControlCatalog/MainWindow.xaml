@@ -52,6 +52,16 @@
       </NativeMenuItem>
     </NativeMenu>
   </NativeMenu.Menu>
+  <NativeMenu.StatusMenu>
+    <NativeMenuItem Header="{Binding #MainWindow.Title}" Icon="/Assets/test_icon.ico">
+    <!-- <NativeMenuItem Header="{Binding #MainWindow.Title}" Icon="{Binding #MainWindow.Icon}"> -->
+      <NativeMenu>
+        <NativeMenuItem Header="{Binding #MainWindow.Title}" Command="{Binding ShowWindowCommand}" />
+        <NativeMenuItemSeparator />
+        <NativeMenuItem Header="{x:Static local:MainWindow.MenuQuitHeader}" Clicked="OnCloseClicked"  />
+      </NativeMenu>  
+    </NativeMenuItem>
+  </NativeMenu.StatusMenu>
 
   <Window.DataTemplates>
     <DataTemplate DataType="vm:NotificationViewModel">

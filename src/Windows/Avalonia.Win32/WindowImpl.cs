@@ -25,7 +25,7 @@ namespace Avalonia.Win32
     /// Window implementation for Win32 platform.
     /// </summary>
     public partial class WindowImpl : IWindowImpl, EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo,
-        ITopLevelImplWithNativeControlHost
+        ITopLevelImplWithNativeControlHost, ITopLevelImplWithStatusMenuExporter
     {
         private static readonly List<WindowImpl> s_instances = new List<WindowImpl>();
 
@@ -143,6 +143,7 @@ namespace Avalonia.Win32
             }
 
             Screen = new ScreenImpl();
+            _statusMenuExporter = new StatusMenuExporter(this);
 
             _nativeControlHost = new Win32NativeControlHost(this);
             s_instances.Add(this);
@@ -171,6 +172,9 @@ namespace Avalonia.Win32
         public Action LostFocus { get; set; }
 
         public Action<WindowTransparencyLevel> TransparencyLevelChanged { get; set; }
+
+        private StatusMenuExporter _statusMenuExporter;
+        public ITopLevelStatusMenuExporter StatusMenuExporter => _statusMenuExporter;
 
         public Thickness BorderThickness
         {
@@ -500,6 +504,8 @@ namespace Avalonia.Win32
         public void Dispose()
         {
             (_gl as IDisposable)?.Dispose();
+            
+            _statusMenuExporter?.Dispose();
 
             if (_dropTarget != null)
             {

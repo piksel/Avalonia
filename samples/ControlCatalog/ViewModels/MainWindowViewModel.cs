@@ -61,6 +61,11 @@ namespace ControlCatalog.ViewModels
                 IsMenuItemChecked = !IsMenuItemChecked;
             });
 
+            ShowWindowCommand = MiniCommand.Create(() =>
+            {
+                WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState.Minimized;
+            });
+
             WindowState = WindowState.Normal;
 
             WindowStates = new WindowState[]
@@ -164,5 +169,7 @@ namespace ControlCatalog.ViewModels
         public MiniCommand ExitCommand { get; }
 
         public MiniCommand ToggleMenuItemCheckedCommand { get; }
+        
+        public MiniCommand ShowWindowCommand { get; }
     }
 }
